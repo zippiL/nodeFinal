@@ -1,8 +1,10 @@
 import mongoose from 'mongoose';
+import ClicksModel from './clicks.js';
 
 const LinksSchema = new mongoose.Schema({
-    originalUrl:String
+    originalUrl:String,
+    clicks: [ClicksModel]
 })
 
-const LinksModel = mongoose.model("categories", LinksSchema);
+const LinksModel = mongoose.model("links", LinksSchema);
 export default LinksModel;
