@@ -86,7 +86,12 @@ const LinksController = {
             const link=LinksModel.findById(req.params.id)
             if(!link)
                 res.status(400).send("notLink")
-            link.clicks;
+            const clicksBySource = {};
+
+            link.targetValues.map((source) => {
+                clicksBySource[source.name] = clicks.filter((click) => click.targetParamValue === source.value).length;
+              });
+              res.status(200).send(clicksBySource)
         }catch (error) {
             console.error("Error deleting link data:", error);
             res.status(500).send("Internal Server Error");
