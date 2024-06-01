@@ -40,9 +40,11 @@ const LinksController = {
     },
     postLinks: async (req, res) => {
         try {
-            const { userId, originalUrl } = req.body;
+            const { userId, originalUrl, targetParamName, targetValues } = req.body;
             const link={
-                originalUrl
+                originalUrl,
+                targetParamName: targetParamName || "t",
+                targetValues: targetValues || []
             }
             const linksToAdd = new LinksModel(link);
             await linksToAdd.save();
