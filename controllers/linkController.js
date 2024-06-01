@@ -1,10 +1,12 @@
 import LinksModel from '../collection/links.js';
+import UsersModel from '../collection/users.js';
 
 const LinksController = {
     getLinks: async (req, res) => {
         try {
             const links = await LinksModel.find();
-            res.status(200).send(links);
+            console.log(links)
+            res.status(200).json(links);
         } catch (error) {
             console.error("Error retrieving users:", error);
             res.status(500).send("Internal Server Error");
@@ -12,10 +14,22 @@ const LinksController = {
     },
     getByIDLinks: async (req, res) => {
         try {
-            const linksId = req.params.id;
-            const link = await LinksModel.findById(linksId);
+            const linkId = req.params.id;
+            const link = await LinksModel.findById(linkId);
+            const targetParamValue = req.query[link.targetParamName];
+
+            console.log("linkbyid",req.ip)
+            link.clicks.push({
+                insertedAt: Date.now(),
+                ipAddress: req.ip,
+                targetParamName:targetParamValue
+              });
+              await link.save();
+ 
             if (link) {
-                res.status(200).send(link);
+                // res.status(200).send(link);
+                res.redirect(link.originalUrl);
+
             } else {
                 res.status(404).send("Link not found");
             }
@@ -26,9 +40,22 @@ const LinksController = {
     },
     postLinks: async (req, res) => {
         try {
-            const linksToAdd = new LinksModel(req.body);
+            const { userId, originalUrl } = req.body;
+            const link={
+                originalUrl
+            }
+            const linksToAdd = new LinksModel(link);
             await linksToAdd.save();
-            res.status(200).send(true);
+            const user = await UsersModel.findById(userId);
+            if (!user) {
+              return res.status(404).json({ message: 'User not found' });
+            }
+        
+            user.links.push(link._id);
+            await user.save();
+        
+            const shortUrl= `http://localhost:3000/links/${linksToAdd._id}`;
+            res.status(200).send(shortUrl);
         } catch (error) {
             console.error("Error adding link data:", error);
             res.status(500).send("Internal Server Error");
@@ -50,6 +77,17 @@ const LinksController = {
             await LinksModel.findByIdAndDelete(req.params.id);
             res.status(200).send("Link deleted successfully!");
         } catch (error) {
+            console.error("Error deleting link data:", error);
+            res.status(500).send("Internal Server Error");
+        }
+    },
+    getClicks:async(req,res)=>{
+        try{
+            const link=LinksModel.findById(req.params.id)
+            if(!link)
+                res.status(400).send("notLink")
+            link.clicks;
+        }catch (error) {
             console.error("Error deleting link data:", error);
             res.status(500).send("Internal Server Error");
         }

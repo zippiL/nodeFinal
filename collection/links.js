@@ -1,10 +1,20 @@
 import mongoose from 'mongoose';
-import ClicksModel from './clicks.js';
 
+const ClicksSchema = new mongoose.Schema({
+    ipAddress: String,
+    insertedAt: Date,
+    targetParamValue:String
+});
+const targetsSchema = new mongoose.Schema({
+    value: String,
+    name: String
+});
 const LinksSchema = new mongoose.Schema({
-    originalUrl:String,
-    clicks: [ClicksModel]
-})
+    originalUrl: String,
+    clicks: [ClicksSchema] ,
+    targetParamName:String,
+    targetValues:[targetsSchema]
+});
 
-const LinksModel = mongoose.model("links", LinksSchema);
+const LinksModel = mongoose.model("Links", LinksSchema);
 export default LinksModel;

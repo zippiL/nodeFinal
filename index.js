@@ -3,11 +3,12 @@ import cors from "cors"
 import bodyParser from "body-parser"
 import LinksRouter from "./Routers/linkRouter.js"
 import UsersRouter from "./Routers/userRouter.js"
-import connectDB from './DB/mongoConnect.js'
+import main from './DB/mongoConnect.js'
 
 
 
-connectDB();
+// connectDB();
+main()
 const app = express()
 const port = 3000;
 app.use(cors());

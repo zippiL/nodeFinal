@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import LinksModel from "./links.js"
 const UsersSchema = new mongoose.Schema({
     name: String,
       email: String,
@@ -7,5 +6,5 @@ const UsersSchema = new mongoose.Schema({
       links: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Link' }]
 })
 
-const UsersModel = mongoose.model("user", UsersSchema);
+const UsersModel = mongoose.model("users", UsersSchema);
 export default UsersModel;
